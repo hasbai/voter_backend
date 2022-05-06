@@ -9,6 +9,7 @@ func index(c *gin.Context) {
 }
 
 func main() {
+	initDB()
 	router := gin.Default()
 	router = registerRouter(router)
 	//goland:noinspection GoUnhandledErrorResult
