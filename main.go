@@ -29,6 +29,10 @@ func index(c *gin.Context) {
 
 // @host
 // @BasePath /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	initDB()
 	router := gin.Default()
@@ -56,6 +60,7 @@ func registerRouter(router *gin.Engine) *gin.Engine {
 	router.GET("/motion", getLastMotion)
 	router.GET("/motions/:id", getMotion)
 	router.POST("/motions", addMotion)
+	router.POST("/motions/:name", voteMotion)
 
 	return router
 }

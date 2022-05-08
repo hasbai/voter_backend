@@ -32,3 +32,12 @@ func detect404(c *gin.Context, result *gorm.DB) error {
 	}
 	panic(result.Error)
 }
+
+func findInUsers(users []User, user User) int {
+	for i, item := range users {
+		if item.ID == user.ID {
+			return i
+		}
+	}
+	return -1
+}

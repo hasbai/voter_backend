@@ -119,6 +119,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/motions/{type}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Motion"
+                ],
+                "summary": "Vote A Motion",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "type",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Motion"
+                        }
+                    }
+                }
+            }
+        },
         "/session": {
             "get": {
                 "produces": [
@@ -463,6 +496,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

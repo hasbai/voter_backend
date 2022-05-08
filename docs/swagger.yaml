@@ -182,6 +182,26 @@ paths:
       summary: Get A Motion
       tags:
       - Motion
+  /motions/{type}:
+    post:
+      parameters:
+      - description: type
+        in: path
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Motion'
+      security:
+      - ApiKeyAuth: []
+      summary: Vote A Motion
+      tags:
+      - Motion
   /session:
     get:
       produces:
@@ -294,4 +314,9 @@ paths:
       summary: Add A User
       tags:
       - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

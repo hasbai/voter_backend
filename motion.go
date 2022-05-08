@@ -67,3 +67,63 @@ func getMotion(c *gin.Context) {
 	}
 	c.JSON(200, motion)
 }
+
+// voteMotion
+// @Summary Vote A Motion
+// @Tags Motion
+// @Produce application/json
+// @Router /motions/{type} [post]
+// @Param type path string true "type"
+// @Success 200 {object} Motion
+// @Security ApiKeyAuth
+func voteMotion(c *gin.Context) {
+	// get type
+	var uri NameUri
+	err := validateUri(c, &uri)
+	if err != nil {
+		return
+	}
+	// get user
+	username := c.GetHeader("Authorization")
+	user := User{Name: username}
+	err = detect404(c, db.Where(&user).First(&user))
+	if err != nil {
+		return
+	}
+	// get motion
+	var motion Motion
+	err = detect404(c, db.Preload(clause.Associations).Last(&motion))
+	if err != nil {
+		return
+	}
+	// vote
+	locAbstain := findInUsers(motion.Abstain, user)
+	locFor := findInUsers(motion.For, user)
+	locAgainst := findInUsers(motion.Against, user)
+
+	switch uri.A {
+	case "for":
+		if locFor >= 0 || locAgainst >= 0 {
+			break
+		}
+		if locAbstain >= 0 {
+			_ = db.Model(&motion).Association("Abstain").Delete(user)
+		}
+		motion.For = append(motion.For, user)
+	case "against":
+		if locFor >= 0 || locAgainst >= 0 {
+			break
+		}
+		if locAbstain >= 0 {
+			_ = db.Model(&motion).Association("Abstain").Delete(user)
+		}
+		motion.Against = append(motion.Against, user)
+	case "abstain":
+		if locFor >= 0 || locAgainst >= 0 || locAbstain >= 0 {
+			break
+		}
+		motion.Abstain = append(motion.Abstain, user)
+	}
+	db.Save(&motion)
+	c.JSON(200, motion)
+}
