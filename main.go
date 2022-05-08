@@ -61,6 +61,7 @@ func registerRouter(router *gin.Engine) *gin.Engine {
 	router.GET("/motions/:id", getMotion)
 	router.POST("/motions", addMotion)
 	router.POST("/motions/:name", voteMotion)
+	router.PUT("/motions", resolveMotion)
 
 	return router
 }

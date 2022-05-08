@@ -25,10 +25,10 @@ type Session struct {
 
 type SimpleMotion struct {
 	BaseModel
-	Name        string `binding:"required" json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
-	SessionID   int    `json:"sessionID,omitempty"`
-	Status      int8   `json:"status,omitempty"`
+	Name        string `binding:"required" json:"name"`
+	Description string `json:"description"`
+	SessionID   int    `json:"sessionID"`
+	Status      int8   `json:"status"`
 }
 
 type Motion struct {

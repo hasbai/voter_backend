@@ -58,6 +58,23 @@ const docTemplate = `{
             }
         },
         "/motions": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Motion"
+                ],
+                "summary": "Resolve A Motion",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Motion"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Add the motion to the latest session",
                 "consumes": [

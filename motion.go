@@ -127,3 +127,26 @@ func voteMotion(c *gin.Context) {
 	db.Save(&motion)
 	c.JSON(200, motion)
 }
+
+// resolveMotion
+// @Summary Resolve A Motion
+// @Tags Motion
+// @Produce application/json
+// @Router /motions [put]
+// @Success 200 {object} Motion
+func resolveMotion(c *gin.Context) {
+	// get motion
+	var motion Motion
+	err := detect404(c, db.Preload(clause.Associations).Last(&motion))
+	if err != nil {
+		return
+	}
+	// resolve motion
+	if len(motion.For) > len(motion.Against) {
+		motion.Status = 1
+	} else {
+		motion.Status = -1
+	}
+	db.Save(&motion)
+	c.JSON(200, motion)
+}
