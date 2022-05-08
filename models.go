@@ -3,6 +3,7 @@ package main
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"os"
 )
 
 type Session struct {
@@ -37,7 +38,11 @@ var db *gorm.DB
 
 func initDB() {
 	var err error
-	db, err = gorm.Open(sqlite.Open("voter.db"), &gorm.Config{})
+	err = os.MkdirAll("data", os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+	db, err = gorm.Open(sqlite.Open("data/db.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

@@ -33,8 +33,9 @@ func main() {
 	initDB()
 	router := gin.Default()
 	router = registerRouter(router)
-	//goland:noinspection GoUnhandledErrorResult
-	router.Run("localhost:8000")
+	if err := router.Run("localhost:8000"); err != nil {
+		panic(err)
+	}
 }
 
 func registerRouter(router *gin.Engine) *gin.Engine {
