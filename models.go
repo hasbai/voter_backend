@@ -4,25 +4,32 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"os"
+	"time"
 )
 
+type BaseModel struct {
+	ID        uint      `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
 type Session struct {
-	gorm.Model
-	Name    string `json:"name" gorm:"unique"`
+	BaseModel
+	Name    string `json:"name" gorm:"unique" binding:"required"`
 	Motions []Motion
 }
 
 type Motion struct {
-	gorm.Model
-	Name        string `json:"name" gorm:"unique"`
+	BaseModel
+	Name        string `json:"name" gorm:"unique" binding:"required"`
 	Description string `json:"description"`
 	Records     []Record
 	SessionID   int
 }
 
 type Record struct {
-	gorm.Model
-	Vote     int8 `json:"vote"`
+	BaseModel
+	Vote     int8 `json:"vote" binding:"required"`
 	User     User
 	UserID   int
 	Motion   Motion
@@ -30,8 +37,8 @@ type Record struct {
 }
 
 type User struct {
-	gorm.Model
-	Name string `json:"name" gorm:"unique"`
+	BaseModel
+	Name string `json:"name" gorm:"unique" binding:"required"`
 }
 
 var db *gorm.DB

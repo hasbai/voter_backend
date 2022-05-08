@@ -30,6 +30,124 @@
                 }
             }
         },
+        "/session": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Get The Last Session",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Session"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.MessageModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/sessions": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Session"
+                ],
+                "summary": "List Sessions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/main.Session"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Add A Session",
+                "parameters": [
+                    {
+                        "description": "json",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.SessionAdd"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Session"
+                        }
+                    },
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.Session"
+                        }
+                    }
+                }
+            }
+        },
+        "/sessions/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Get Session",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Session"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.MessageModel"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "consumes": [
@@ -88,18 +206,6 @@
         }
     },
     "definitions": {
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
         "main.MessageModel": {
             "type": "object",
             "properties": {
@@ -108,14 +214,112 @@
                 }
             }
         },
-        "main.User": {
+        "main.Motion": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
                 },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Record"
+                    }
+                },
+                "sessionID": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.Record": {
+            "type": "object",
+            "required": [
+                "vote"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "motion": {
+                    "$ref": "#/definitions/main.Motion"
+                },
+                "motionID": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/main.User"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "vote": {
+                    "type": "integer"
+                }
+            }
+        },
+        "main.Session": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "motions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Motion"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.SessionAdd": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.User": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
