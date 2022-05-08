@@ -38,6 +38,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/motions": {
+            "post": {
+                "description": "Add the motion to the latest session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Motion"
+                ],
+                "summary": "Add A Motion",
+                "parameters": [
+                    {
+                        "description": "json",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.MotionAdd"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.Motion"
+                        }
+                    }
+                }
+            }
+        },
         "/session": {
             "get": {
                 "produces": [
@@ -228,11 +262,29 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "abstain": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.User"
+                    }
+                },
+                "against": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.User"
+                    }
+                },
                 "createdAt": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
+                },
+                "for": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.User"
+                    }
                 },
                 "id": {
                     "type": "integer"
@@ -240,13 +292,10 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "records": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/main.Record"
-                    }
-                },
                 "sessionID": {
+                    "type": "integer"
+                },
+                "status": {
                     "type": "integer"
                 },
                 "updatedAt": {
@@ -254,35 +303,14 @@ const docTemplate = `{
                 }
             }
         },
-        "main.Record": {
+        "main.MotionAdd": {
             "type": "object",
-            "required": [
-                "vote"
-            ],
             "properties": {
-                "createdAt": {
+                "description": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
-                "motion": {
-                    "$ref": "#/definitions/main.Motion"
-                },
-                "motionID": {
-                    "type": "integer"
-                },
-                "updatedAt": {
+                "name": {
                     "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/main.User"
-                },
-                "userID": {
-                    "type": "integer"
-                },
-                "vote": {
-                    "type": "integer"
                 }
             }
         },

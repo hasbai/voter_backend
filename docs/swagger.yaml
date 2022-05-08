@@ -7,45 +7,41 @@ definitions:
     type: object
   main.Motion:
     properties:
+      abstain:
+        items:
+          $ref: '#/definitions/main.User'
+        type: array
+      against:
+        items:
+          $ref: '#/definitions/main.User'
+        type: array
       createdAt:
         type: string
       description:
         type: string
+      for:
+        items:
+          $ref: '#/definitions/main.User'
+        type: array
       id:
         type: integer
       name:
         type: string
-      records:
-        items:
-          $ref: '#/definitions/main.Record'
-        type: array
       sessionID:
+        type: integer
+      status:
         type: integer
       updatedAt:
         type: string
     required:
     - name
     type: object
-  main.Record:
+  main.MotionAdd:
     properties:
-      createdAt:
+      description:
         type: string
-      id:
-        type: integer
-      motion:
-        $ref: '#/definitions/main.Motion'
-      motionID:
-        type: integer
-      updatedAt:
+      name:
         type: string
-      user:
-        $ref: '#/definitions/main.User'
-      userID:
-        type: integer
-      vote:
-        type: integer
-    required:
-    - vote
     type: object
   main.Session:
     properties:
@@ -102,6 +98,28 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/main.MessageModel'
+  /motions:
+    post:
+      consumes:
+      - application/json
+      description: Add the motion to the latest session
+      parameters:
+      - description: json
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/main.MotionAdd'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Motion'
+      summary: Add A Motion
+      tags:
+      - Motion
   /session:
     get:
       produces:
