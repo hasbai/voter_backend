@@ -130,6 +130,18 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/main.MessageModel'
+  /motion:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Motion'
+      summary: Get The Last Motion
+      tags:
+      - Motion
   /motions:
     post:
       consumes:
@@ -150,6 +162,24 @@ paths:
           schema:
             $ref: '#/definitions/main.Motion'
       summary: Add A Motion
+      tags:
+      - Motion
+  /motions/{id}:
+    get:
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Motion'
+      summary: Get A Motion
       tags:
       - Motion
   /session:

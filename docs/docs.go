@@ -38,6 +38,25 @@ const docTemplate = `{
                 }
             }
         },
+        "/motion": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Motion"
+                ],
+                "summary": "Get The Last Motion",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Motion"
+                        }
+                    }
+                }
+            }
+        },
         "/motions": {
             "post": {
                 "description": "Add the motion to the latest session",
@@ -65,6 +84,34 @@ const docTemplate = `{
                 "responses": {
                     "201": {
                         "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.Motion"
+                        }
+                    }
+                }
+            }
+        },
+        "/motions/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Motion"
+                ],
+                "summary": "Get A Motion",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/main.Motion"
                         }

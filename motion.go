@@ -1,6 +1,9 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/clause"
+)
 
 type MotionAdd struct {
 	Name        string `json:"name,omitempty"`
@@ -28,6 +31,39 @@ func addMotion(c *gin.Context) {
 		return
 	}
 	motion.SessionID = sessionID
-	db.Create(&motion)
+	db.Preload(clause.Associations).Create(&motion)
 	c.JSON(201, motion)
+}
+
+// getLastMotion
+// @Summary Get The Last Motion
+// @Tags Motion
+// @Produce application/json
+// @Router /motion [get]
+// @Success 200 {object} Motion
+func getLastMotion(c *gin.Context) {
+	var motion Motion
+	if err := detect404(c, db.Preload(clause.Associations).Last(&motion)); err != nil {
+		return
+	}
+	c.JSON(200, motion)
+}
+
+// getMotion
+// @Summary Get A Motion
+// @Tags Motion
+// @Produce application/json
+// @Router /motions/{id} [get]
+// @Param id path int true "id"
+// @Success 200 {object} Motion
+func getMotion(c *gin.Context) {
+	var motion Motion
+	var id IDUri
+	if err := validateUri(c, &id); err != nil {
+		return
+	}
+	if err := detect404(c, db.Preload(clause.Associations).Last(&motion, id.A)); err != nil {
+		return
+	}
+	c.JSON(200, motion)
 }

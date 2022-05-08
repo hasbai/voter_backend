@@ -53,6 +53,8 @@ func registerRouter(router *gin.Engine) *gin.Engine {
 	router.GET("/sessions/:id", getSession)
 	router.PUT("/sessions", addSession)
 
+	router.GET("/motion", getLastMotion)
+	router.GET("/motions/:id", getMotion)
 	router.POST("/motions", addMotion)
 
 	return router

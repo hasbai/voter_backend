@@ -20,7 +20,7 @@ type SimpleSession struct {
 
 type Session struct {
 	SimpleSession
-	Motions []Motion
+	Motions []Motion `json:"motions"`
 }
 
 type SimpleMotion struct {
@@ -33,9 +33,9 @@ type SimpleMotion struct {
 
 type Motion struct {
 	SimpleMotion
-	For     []User `json:"for,omitempty"     gorm:"many2many:motion_for;"`
-	Against []User `json:"against,omitempty" gorm:"many2many:motion_against;"`
-	Abstain []User `json:"abstain,omitempty" gorm:"many2many:motion_abstain;"`
+	For     []User `json:"for"     gorm:"many2many:motion_for;"`
+	Against []User `json:"against" gorm:"many2many:motion_against;"`
+	Abstain []User `json:"abstain" gorm:"many2many:motion_abstain;"`
 }
 
 type User struct {
