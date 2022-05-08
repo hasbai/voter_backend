@@ -63,14 +63,8 @@ func getSession(c *gin.Context) {
 		return
 	}
 	var session Session
-	if id.A <= 0 {
-		if err := detect404(c, db.Preload("Motions").Last(&session)); err != nil {
-			return
-		}
-	} else {
-		if err := detect404(c, db.Preload("Motions").First(&session, id.A)); err != nil {
-			return
-		}
+	if err := detect404(c, db.Preload("Motions").First(&session, id.A)); err != nil {
+		return
 	}
 	c.JSON(200, session)
 }
