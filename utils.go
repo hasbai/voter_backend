@@ -34,9 +34,16 @@ func detect404(c *gin.Context, result *gorm.DB) error {
 }
 
 func findInUsers(users []User, user User) int {
-	for i, item := range users {
-		if item.ID == user.ID {
-			return i
+	left := 0
+	right := len(users)
+	for left < right {
+		mid := left + (right-left)>>1
+		if users[mid].ID < user.ID {
+			left = mid + 1
+		} else if users[mid].ID > user.ID {
+			right = mid
+		} else {
+			return mid
 		}
 	}
 	return -1
