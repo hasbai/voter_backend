@@ -43,7 +43,12 @@ definitions:
       name:
         type: string
     type: object
-  main.Session:
+  main.SessionAdd:
+    properties:
+      name:
+        type: string
+    type: object
+  main.SessionResponse:
     properties:
       createdAt:
         type: string
@@ -51,7 +56,7 @@ definitions:
         type: integer
       motions:
         items:
-          $ref: '#/definitions/main.Motion'
+          $ref: '#/definitions/main.SimpleMotion'
         type: array
       name:
         type: string
@@ -60,10 +65,37 @@ definitions:
     required:
     - name
     type: object
-  main.SessionAdd:
+  main.SimpleMotion:
     properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
       name:
         type: string
+      sessionID:
+        type: integer
+      status:
+        type: integer
+      updatedAt:
+        type: string
+    required:
+    - name
+    type: object
+  main.SimpleSession:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - name
     type: object
   main.User:
     properties:
@@ -128,7 +160,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Session'
+            $ref: '#/definitions/main.SessionResponse'
         "404":
           description: Not Found
           schema:
@@ -145,7 +177,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/main.Session'
+              $ref: '#/definitions/main.SimpleSession'
             type: array
       summary: List Sessions
       tags:
@@ -166,11 +198,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Session'
+            $ref: '#/definitions/main.SessionResponse'
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Session'
+            $ref: '#/definitions/main.SessionResponse'
       summary: Add A Session
       tags:
       - Session
@@ -188,7 +220,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Session'
+            $ref: '#/definitions/main.SessionResponse'
         "404":
           description: Not Found
           schema:

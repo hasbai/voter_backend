@@ -13,21 +13,29 @@ type BaseModel struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-type Session struct {
+type SimpleSession struct {
 	BaseModel
-	Name    string `json:"name" gorm:"unique" binding:"required"`
+	Name string `json:"name" gorm:"unique" binding:"required"`
+}
+
+type Session struct {
+	SimpleSession
 	Motions []Motion
 }
 
-type Motion struct {
+type SimpleMotion struct {
 	BaseModel
 	Name        string `binding:"required" json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
 	SessionID   int    `json:"sessionID,omitempty"`
 	Status      int8   `json:"status,omitempty"`
-	For         []User `json:"for,omitempty"     gorm:"many2many:motion_for;"`
-	Against     []User `json:"against,omitempty" gorm:"many2many:motion_against;"`
-	Abstain     []User `json:"abstain,omitempty" gorm:"many2many:motion_abstain;"`
+}
+
+type Motion struct {
+	SimpleMotion
+	For     []User `json:"for,omitempty"     gorm:"many2many:motion_for;"`
+	Against []User `json:"against,omitempty" gorm:"many2many:motion_against;"`
+	Abstain []User `json:"abstain,omitempty" gorm:"many2many:motion_abstain;"`
 }
 
 type User struct {

@@ -8,6 +8,11 @@ type SessionAdd struct {
 	Name string `json:"name,omitempty"`
 }
 
+type SessionResponse struct {
+	SimpleSession
+	Motions []SimpleMotion
+}
+
 // addSession
 // @Summary Add A Session
 // @Tags Session
@@ -15,14 +20,14 @@ type SessionAdd struct {
 // @Produce application/json
 // @Router /sessions [put]
 // @Param json body SessionAdd true "json"
-// @Success 201 {object} Session
-// @Success 200 {object} Session
+// @Success 201 {object} SessionResponse
+// @Success 200 {object} SessionResponse
 func addSession(c *gin.Context) {
 	var session Session
 	if err := validateJSON(c, &session); err != nil {
 		return
 	}
-	result := db.Where(Session{Name: session.Name}).FirstOrCreate(&session)
+	result := db.Where(&session).FirstOrCreate(&session)
 	var code int
 	if result.RowsAffected > 0 {
 		code = 201
@@ -37,7 +42,7 @@ func addSession(c *gin.Context) {
 // @Tags Session
 // @Produce application/json
 // @Router /sessions [get]
-// @Success 200 {array} Session
+// @Success 200 {array} SimpleSession
 func listSessions(c *gin.Context) {
 	var sessions []Session
 	db.Find(&sessions)
@@ -50,7 +55,7 @@ func listSessions(c *gin.Context) {
 // @Produce application/json
 // @Router /sessions/{id} [get]
 // @Param id path int true "id"
-// @Success 200 {object} Session
+// @Success 200 {object} SessionResponse
 // @Failure 404 {object} MessageModel
 func getSession(c *gin.Context) {
 	var id IDUri
@@ -59,11 +64,11 @@ func getSession(c *gin.Context) {
 	}
 	var session Session
 	if id.A <= 0 {
-		if err := detect404(c, db.Last(&session)); err != nil {
+		if err := detect404(c, db.Preload("Motions").Last(&session)); err != nil {
 			return
 		}
 	} else {
-		if err := detect404(c, db.First(&session, id.A)); err != nil {
+		if err := detect404(c, db.Preload("Motions").First(&session, id.A)); err != nil {
 			return
 		}
 	}
@@ -75,11 +80,11 @@ func getSession(c *gin.Context) {
 // @Tags Session
 // @Produce application/json
 // @Router /session [get]
-// @Success 200 {object} Session
+// @Success 200 {object} SessionResponse
 // @Failure 404 {object} MessageModel
 func getLastSession(c *gin.Context) {
 	var session Session
-	if err := detect404(c, db.Last(&session)); err != nil {
+	if err := detect404(c, db.Preload("Motions").Last(&session)); err != nil {
 		return
 	}
 	c.JSON(200, session)

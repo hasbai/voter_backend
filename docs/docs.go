@@ -85,7 +85,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/main.SessionResponse"
                         }
                     },
                     "404": {
@@ -112,7 +112,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.Session"
+                                "$ref": "#/definitions/main.SimpleSession"
                             }
                         }
                     }
@@ -144,13 +144,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/main.SessionResponse"
                         }
                     },
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/main.SessionResponse"
                         }
                     }
                 }
@@ -178,7 +178,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/main.SessionResponse"
                         }
                     },
                     "404": {
@@ -314,7 +314,15 @@ const docTemplate = `{
                 }
             }
         },
-        "main.Session": {
+        "main.SessionAdd": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.SessionResponse": {
             "type": "object",
             "required": [
                 "name"
@@ -329,7 +337,7 @@ const docTemplate = `{
                 "motions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.Motion"
+                        "$ref": "#/definitions/main.SimpleMotion"
                     }
                 },
                 "name": {
@@ -340,10 +348,51 @@ const docTemplate = `{
                 }
             }
         },
-        "main.SessionAdd": {
+        "main.SimpleMotion": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
+                    "type": "string"
+                },
+                "sessionID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.SimpleSession": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }
