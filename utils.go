@@ -33,18 +33,9 @@ func detect404(c *gin.Context, result *gorm.DB) error {
 	panic(result.Error)
 }
 
-func findInUsers(users []User, user User) int {
-	left := 0
-	right := len(users)
-	for left < right {
-		mid := left + (right-left)>>1
-		if users[mid].ID < user.ID {
-			left = mid + 1
-		} else if users[mid].ID > user.ID {
-			right = mid
-		} else {
-			return mid
-		}
-	}
-	return -1
+func getUser(c *gin.Context) (User, error) {
+	username := c.GetHeader("Authorization")
+	user := User{}
+	err := detect404(c, db.Where("name = ?", username).First(&user))
+	return user, err
 }

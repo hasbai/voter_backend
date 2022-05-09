@@ -76,6 +76,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Add the motion to the latest session",
                 "consumes": [
                     "application/json"
@@ -362,13 +367,13 @@ const docTemplate = `{
                 "abstain": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.User"
+                        "type": "integer"
                     }
                 },
                 "against": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.User"
+                        "type": "integer"
                     }
                 },
                 "createdAt": {
@@ -380,7 +385,7 @@ const docTemplate = `{
                 "for": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.User"
+                        "type": "integer"
                     }
                 },
                 "id": {
@@ -397,6 +402,9 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
                 }
             }
         },
@@ -434,40 +442,11 @@ const docTemplate = `{
                 "motions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.SimpleMotion"
+                        "$ref": "#/definitions/main.Motion"
                     }
                 },
                 "name": {
                     "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.SimpleMotion": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "sessionID": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"

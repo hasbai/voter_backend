@@ -10,7 +10,7 @@ type SessionAdd struct {
 
 type SessionResponse struct {
 	SimpleSession
-	Motions []SimpleMotion
+	Motions []Motion
 }
 
 // addSession

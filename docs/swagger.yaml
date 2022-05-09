@@ -9,11 +9,11 @@ definitions:
     properties:
       abstain:
         items:
-          $ref: '#/definitions/main.User'
+          type: integer
         type: array
       against:
         items:
-          $ref: '#/definitions/main.User'
+          type: integer
         type: array
       createdAt:
         type: string
@@ -21,7 +21,7 @@ definitions:
         type: string
       for:
         items:
-          $ref: '#/definitions/main.User'
+          type: integer
         type: array
       id:
         type: integer
@@ -33,6 +33,8 @@ definitions:
         type: integer
       updatedAt:
         type: string
+      userID:
+        type: integer
     required:
     - name
     type: object
@@ -56,29 +58,10 @@ definitions:
         type: integer
       motions:
         items:
-          $ref: '#/definitions/main.SimpleMotion'
+          $ref: '#/definitions/main.Motion'
         type: array
       name:
         type: string
-      updatedAt:
-        type: string
-    required:
-    - name
-    type: object
-  main.SimpleMotion:
-    properties:
-      createdAt:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      sessionID:
-        type: integer
-      status:
-        type: integer
       updatedAt:
         type: string
     required:
@@ -161,6 +144,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/main.Motion'
+      security:
+      - ApiKeyAuth: []
       summary: Add A Motion
       tags:
       - Motion

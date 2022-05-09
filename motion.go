@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm/clause"
+	"golang.org/x/exp/slices"
 )
 
 type MotionAdd struct {
@@ -19,11 +19,20 @@ type MotionAdd struct {
 // @Router /motions [post]
 // @Param json body MotionAdd true "json"
 // @Success 201 {object} Motion
+// @Security ApiKeyAuth
 func addMotion(c *gin.Context) {
+	// validate motion
 	var motion Motion
 	if err := validateJSON(c, &motion); err != nil {
 		return
 	}
+	// get user
+	user, err := getUser(c)
+	if err != nil {
+		return
+	}
+	motion.UserID = user.ID
+	// get the last session
 	var sessionID int
 	db.Raw("select id from sessions order by id desc limit 1").Scan(&sessionID)
 	if sessionID == 0 {
@@ -31,7 +40,8 @@ func addMotion(c *gin.Context) {
 		return
 	}
 	motion.SessionID = sessionID
-	db.Preload(clause.Associations).Create(&motion)
+	// create motion and return
+	db.Create(&motion)
 	c.JSON(201, motion)
 }
 
@@ -43,7 +53,7 @@ func addMotion(c *gin.Context) {
 // @Success 200 {object} Motion
 func getLastMotion(c *gin.Context) {
 	var motion Motion
-	if err := detect404(c, db.Preload(clause.Associations).Last(&motion)); err != nil {
+	if err := detect404(c, db.Last(&motion)); err != nil {
 		return
 	}
 	c.JSON(200, motion)
@@ -62,7 +72,7 @@ func getMotion(c *gin.Context) {
 	if err := validateUri(c, &id); err != nil {
 		return
 	}
-	if err := detect404(c, db.Preload(clause.Associations).Last(&motion, id.A)); err != nil {
+	if err := detect404(c, db.Last(&motion, id.A)); err != nil {
 		return
 	}
 	c.JSON(200, motion)
@@ -84,45 +94,42 @@ func voteMotion(c *gin.Context) {
 		return
 	}
 	// get user
-	username := c.GetHeader("Authorization")
-	user := User{Name: username}
-	err = detect404(c, db.Where(&user).First(&user))
+	user, err := getUser(c)
 	if err != nil {
 		return
 	}
 	// get motion
 	var motion Motion
-	err = detect404(c, db.Preload(clause.Associations).Last(&motion))
+	err = detect404(c, db.Last(&motion))
 	if err != nil {
 		return
 	}
 	// vote
-	locAbstain := findInUsers(motion.Abstain, user)
-	locFor := findInUsers(motion.For, user)
-	locAgainst := findInUsers(motion.Against, user)
-
+	locAbstain := slices.Index(motion.Abstain, user.ID)
+	locFor := slices.Index(motion.For, user.ID)
+	locAgainst := slices.Index(motion.Against, user.ID)
 	switch uri.A {
 	case "for":
 		if locFor >= 0 || locAgainst >= 0 {
 			break
 		}
 		if locAbstain >= 0 {
-			_ = db.Model(&motion).Association("Abstain").Delete(user)
+			motion.Abstain = slices.Delete(motion.Abstain, locAbstain, locAbstain+1)
 		}
-		motion.For = append(motion.For, user)
+		motion.For = append(motion.For, user.ID)
 	case "against":
 		if locFor >= 0 || locAgainst >= 0 {
 			break
 		}
 		if locAbstain >= 0 {
-			_ = db.Model(&motion).Association("Abstain").Delete(user)
+			motion.Abstain = slices.Delete(motion.Abstain, locAbstain, locAbstain+1)
 		}
-		motion.Against = append(motion.Against, user)
+		motion.Against = append(motion.Against, user.ID)
 	case "abstain":
 		if locFor >= 0 || locAgainst >= 0 || locAbstain >= 0 {
 			break
 		}
-		motion.Abstain = append(motion.Abstain, user)
+		motion.Abstain = append(motion.Abstain, user.ID)
 	}
 	db.Save(&motion)
 	c.JSON(200, motion)
@@ -137,7 +144,7 @@ func voteMotion(c *gin.Context) {
 func resolveMotion(c *gin.Context) {
 	// get motion
 	var motion Motion
-	err := detect404(c, db.Preload(clause.Associations).Last(&motion))
+	err := detect404(c, db.Last(&motion))
 	if err != nil {
 		return
 	}

@@ -68,6 +68,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Add the motion to the latest session",
                 "consumes": [
                     "application/json"
@@ -354,13 +359,13 @@
                 "abstain": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.User"
+                        "type": "integer"
                     }
                 },
                 "against": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.User"
+                        "type": "integer"
                     }
                 },
                 "createdAt": {
@@ -372,7 +377,7 @@
                 "for": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.User"
+                        "type": "integer"
                     }
                 },
                 "id": {
@@ -389,6 +394,9 @@
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
                 }
             }
         },
@@ -426,40 +434,11 @@
                 "motions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.SimpleMotion"
+                        "$ref": "#/definitions/main.Motion"
                     }
                 },
                 "name": {
                     "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.SimpleMotion": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "sessionID": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"
