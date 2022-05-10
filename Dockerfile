@@ -3,8 +3,7 @@ FROM golang:1.18 as builder
 WORKDIR /app
 ENV GO111MODULE=on
 
-COPY go.mod ./
-COPY go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
@@ -14,7 +13,7 @@ FROM alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/go .
+COPY --from=builder /app/go /app/
 
 ENV GIN_MODE=release
 
