@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/slices"
+	"voter_backend/ws"
 )
 
 type MotionAdd struct {
@@ -42,6 +43,7 @@ func addMotion(c *gin.Context) {
 	motion.SessionID = sessionID
 	// create motion and return
 	db.Create(&motion)
+	ws.BroadcastObject("motion", &motion)
 	c.JSON(201, motion)
 }
 
@@ -132,6 +134,7 @@ func voteMotion(c *gin.Context) {
 		motion.Abstain = append(motion.Abstain, user.ID)
 	}
 	db.Save(&motion)
+	ws.BroadcastObject("motion", &motion)
 	c.JSON(200, motion)
 }
 
@@ -155,5 +158,6 @@ func resolveMotion(c *gin.Context) {
 		motion.Status = -1
 	}
 	db.Save(&motion)
+	ws.BroadcastObject("motion", &motion)
 	c.JSON(200, motion)
 }
