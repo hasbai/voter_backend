@@ -48,7 +48,7 @@ func main() {
 	session.RegisterRouter(app)
 	ws.RegisterRouter(app)
 
-	if err := app.Run("localhost:8000"); err != nil {
+	if err := app.Run("0.0.0.0:8000"); err != nil {
 		panic(err)
 	}
 }
