@@ -34,7 +34,6 @@ func index(c *gin.Context) {
 // @in header
 // @name Authorization
 func main() {
-
 	initDB()
 	router := gin.Default()
 	router = registerRouter(router)
