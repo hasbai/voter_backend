@@ -4,7 +4,7 @@ WORKDIR /app
 ENV GO111MODULE=on
 
 COPY go.mod go.sum ./
-RUN go mod download
+RUN apk add gcc && go mod download
 
 COPY . .
 RUN go build -o go
