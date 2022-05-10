@@ -4,7 +4,11 @@ WORKDIR /app
 ENV GO111MODULE=on
 
 COPY go.mod go.sum ./
-RUN apk add gcc && go mod download
+RUN apk add --no-cache --virtual .build-deps \
+        ca-certificates \
+        gcc \
+        g++ &&  \
+    go mod download
 
 COPY . .
 RUN go build -o go
