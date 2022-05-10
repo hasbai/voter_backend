@@ -58,23 +58,6 @@ const docTemplate = `{
             }
         },
         "/motions": {
-            "put": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Motion"
-                ],
-                "summary": "Resolve A Motion",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/main.Motion"
-                        }
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {
@@ -139,9 +122,35 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Motion"
+                ],
+                "summary": "Resolve A Motion",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Motion"
+                        }
+                    }
+                }
             }
         },
-        "/motions/{type}": {
+        "/motions/{id}/{type}": {
             "post": {
                 "security": [
                     {
@@ -156,6 +165,13 @@ const docTemplate = `{
                 ],
                 "summary": "Vote A Motion",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "type",

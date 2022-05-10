@@ -11,3 +11,8 @@ type IDUri struct {
 type NameUri struct {
 	A string `uri:"name" binding:"required"`
 }
+
+type IdNameUri struct {
+	A int    `uri:"id" binding:"required"`
+	B string `uri:"name" binding:"required"`
+}

@@ -149,17 +149,6 @@ paths:
       summary: Add A Motion
       tags:
       - Motion
-    put:
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.Motion'
-      summary: Resolve A Motion
-      tags:
-      - Motion
   /motions/{id}:
     get:
       parameters:
@@ -178,9 +167,31 @@ paths:
       summary: Get A Motion
       tags:
       - Motion
-  /motions/{type}:
+    put:
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Motion'
+      summary: Resolve A Motion
+      tags:
+      - Motion
+  /motions/{id}/{type}:
     post:
       parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: type
         in: path
         name: type

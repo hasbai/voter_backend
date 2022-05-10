@@ -84,13 +84,14 @@ func getMotion(c *gin.Context) {
 // @Summary Vote A Motion
 // @Tags Motion
 // @Produce application/json
-// @Router /motions/{type} [post]
+// @Router /motions/{id}/{type} [post]
+// @Param id path int true "id"
 // @Param type path string true "type"
 // @Success 200 {object} Motion
 // @Security ApiKeyAuth
 func voteMotion(c *gin.Context) {
 	// get type
-	var uri NameUri
+	var uri IdNameUri
 	err := validateUri(c, &uri)
 	if err != nil {
 		return
@@ -102,7 +103,7 @@ func voteMotion(c *gin.Context) {
 	}
 	// get motion
 	var motion Motion
-	err = detect404(c, db.Last(&motion))
+	err = detect404(c, db.First(&motion, uri.A))
 	if err != nil {
 		return
 	}
@@ -110,7 +111,7 @@ func voteMotion(c *gin.Context) {
 	locAbstain := slices.Index(motion.Abstain, user.ID)
 	locFor := slices.Index(motion.For, user.ID)
 	locAgainst := slices.Index(motion.Against, user.ID)
-	switch uri.A {
+	switch uri.B {
 	case "for":
 		if locFor >= 0 || locAgainst >= 0 {
 			break
@@ -142,12 +143,18 @@ func voteMotion(c *gin.Context) {
 // @Summary Resolve A Motion
 // @Tags Motion
 // @Produce application/json
-// @Router /motions [put]
+// @Router /motions/{id} [put]
+// @Param id path int true "id"
 // @Success 200 {object} Motion
 func resolveMotion(c *gin.Context) {
 	// get motion
+	var uri IDUri
+	err := validateUri(c, &uri)
+	if err != nil {
+		return
+	}
 	var motion Motion
-	err := detect404(c, db.Last(&motion))
+	err = detect404(c, db.First(&motion, uri.A))
 	if err != nil {
 		return
 	}
