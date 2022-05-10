@@ -1,12 +1,15 @@
-package main
+package motion
 
 import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/slices"
+	"voter_backend/db"
+	"voter_backend/user"
+	"voter_backend/utils"
 	"voter_backend/ws"
 )
 
-type MotionAdd struct {
+type AddMotionModel struct {
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
 }
@@ -18,31 +21,31 @@ type MotionAdd struct {
 // @Accept application/json
 // @Produce application/json
 // @Router /motions [post]
-// @Param json body MotionAdd true "json"
+// @Param json body AddMotionModel true "json"
 // @Success 201 {object} Motion
 // @Security ApiKeyAuth
 func addMotion(c *gin.Context) {
 	// validate motion
 	var motion Motion
-	if err := validateJSON(c, &motion); err != nil {
+	if err := utils.ValidateJSON(c, &motion); err != nil {
 		return
 	}
 	// get user
-	user, err := getUser(c)
+	u, err := user.GetUser(c)
 	if err != nil {
 		return
 	}
-	motion.UserID = user.ID
+	motion.UserID = u.ID
 	// get the last session
 	var sessionID int
-	db.Raw("select id from sessions order by id desc limit 1").Scan(&sessionID)
+	db.DB.Raw("select id from sessions order by id desc limit 1").Scan(&sessionID)
 	if sessionID == 0 {
 		c.JSON(400, gin.H{"message": "No sessions exist."})
 		return
 	}
 	motion.SessionID = sessionID
 	// create motion and return
-	db.Create(&motion)
+	db.DB.Create(&motion)
 	ws.BroadcastObject("motion", &motion)
 	c.JSON(201, motion)
 }
@@ -55,7 +58,7 @@ func addMotion(c *gin.Context) {
 // @Success 200 {object} Motion
 func getLastMotion(c *gin.Context) {
 	var motion Motion
-	if err := detect404(c, db.Last(&motion)); err != nil {
+	if err := utils.Detect404(c, db.DB.Last(&motion)); err != nil {
 		return
 	}
 	c.JSON(200, motion)
@@ -70,11 +73,11 @@ func getLastMotion(c *gin.Context) {
 // @Success 200 {object} Motion
 func getMotion(c *gin.Context) {
 	var motion Motion
-	var id IDUri
-	if err := validateUri(c, &id); err != nil {
+	var id utils.IDUri
+	if err := utils.ValidateUri(c, &id); err != nil {
 		return
 	}
-	if err := detect404(c, db.Last(&motion, id.A)); err != nil {
+	if err := utils.Detect404(c, db.DB.Last(&motion, id.A)); err != nil {
 		return
 	}
 	c.JSON(200, motion)
@@ -91,26 +94,26 @@ func getMotion(c *gin.Context) {
 // @Security ApiKeyAuth
 func voteMotion(c *gin.Context) {
 	// get type
-	var uri IdNameUri
-	err := validateUri(c, &uri)
+	var uri utils.IdNameUri
+	err := utils.ValidateUri(c, &uri)
 	if err != nil {
 		return
 	}
 	// get user
-	user, err := getUser(c)
+	u, err := user.GetUser(c)
 	if err != nil {
 		return
 	}
 	// get motion
 	var motion Motion
-	err = detect404(c, db.First(&motion, uri.A))
+	err = utils.Detect404(c, db.DB.First(&motion, uri.A))
 	if err != nil {
 		return
 	}
 	// vote
-	locAbstain := slices.Index(motion.Abstain, user.ID)
-	locFor := slices.Index(motion.For, user.ID)
-	locAgainst := slices.Index(motion.Against, user.ID)
+	locAbstain := slices.Index(motion.Abstain, u.ID)
+	locFor := slices.Index(motion.For, u.ID)
+	locAgainst := slices.Index(motion.Against, u.ID)
 	switch uri.B {
 	case "for":
 		if locFor >= 0 || locAgainst >= 0 {
@@ -119,7 +122,7 @@ func voteMotion(c *gin.Context) {
 		if locAbstain >= 0 {
 			motion.Abstain = slices.Delete(motion.Abstain, locAbstain, locAbstain+1)
 		}
-		motion.For = append(motion.For, user.ID)
+		motion.For = append(motion.For, u.ID)
 	case "against":
 		if locFor >= 0 || locAgainst >= 0 {
 			break
@@ -127,14 +130,14 @@ func voteMotion(c *gin.Context) {
 		if locAbstain >= 0 {
 			motion.Abstain = slices.Delete(motion.Abstain, locAbstain, locAbstain+1)
 		}
-		motion.Against = append(motion.Against, user.ID)
+		motion.Against = append(motion.Against, u.ID)
 	case "abstain":
 		if locFor >= 0 || locAgainst >= 0 || locAbstain >= 0 {
 			break
 		}
-		motion.Abstain = append(motion.Abstain, user.ID)
+		motion.Abstain = append(motion.Abstain, u.ID)
 	}
-	db.Save(&motion)
+	db.DB.Save(&motion)
 	ws.BroadcastObject("motion", &motion)
 	c.JSON(200, motion)
 }
@@ -148,13 +151,13 @@ func voteMotion(c *gin.Context) {
 // @Success 200 {object} Motion
 func resolveMotion(c *gin.Context) {
 	// get motion
-	var uri IDUri
-	err := validateUri(c, &uri)
+	var uri utils.IDUri
+	err := utils.ValidateUri(c, &uri)
 	if err != nil {
 		return
 	}
 	var motion Motion
-	err = detect404(c, db.First(&motion, uri.A))
+	err = utils.Detect404(c, db.DB.First(&motion, uri.A))
 	if err != nil {
 		return
 	}
@@ -164,7 +167,7 @@ func resolveMotion(c *gin.Context) {
 	} else {
 		motion.Status = -1
 	}
-	db.Save(&motion)
+	db.DB.Save(&motion)
 	ws.BroadcastObject("motion", &motion)
 	c.JSON(200, motion)
 }

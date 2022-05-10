@@ -32,7 +32,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.MessageModel"
+                            "$ref": "#/definitions/utils.MessageModel"
                         }
                     }
                 }
@@ -51,7 +51,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -82,7 +82,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.MotionAdd"
+                            "$ref": "#/definitions/motion.AddMotionModel"
                         }
                     }
                 ],
@@ -90,7 +90,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -118,7 +118,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -144,7 +144,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -184,7 +184,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -203,13 +203,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/session.Session"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/main.MessageModel"
+                            "$ref": "#/definitions/utils.MessageModel"
                         }
                     }
                 }
@@ -230,7 +230,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.SimpleSession"
+                                "$ref": "#/definitions/session.SimpleSession"
                             }
                         }
                     }
@@ -254,7 +254,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.SessionAdd"
+                            "$ref": "#/definitions/session.AddSessionModel"
                         }
                     }
                 ],
@@ -262,13 +262,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/session.Session"
                         }
                     },
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/session.Session"
                         }
                     }
                 }
@@ -296,13 +296,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/session.Session"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/main.MessageModel"
+                            "$ref": "#/definitions/utils.MessageModel"
                         }
                     }
                 }
@@ -326,7 +326,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.User"
+                                "$ref": "#/definitions/user.User"
                             }
                         }
                     }
@@ -358,7 +358,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.User"
+                            "$ref": "#/definitions/user.User"
                         }
                     }
                 }
@@ -366,15 +366,18 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.MessageModel": {
+        "motion.AddMotionModel": {
             "type": "object",
             "properties": {
-                "message": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
         },
-        "main.Motion": {
+        "motion.Motion": {
             "type": "object",
             "required": [
                 "name"
@@ -424,18 +427,15 @@ const docTemplate = `{
                 }
             }
         },
-        "main.MotionAdd": {
+        "session.AddSessionModel": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string"
                 }
             }
         },
-        "main.Session": {
+        "session.Session": {
             "type": "object",
             "required": [
                 "name"
@@ -450,7 +450,7 @@ const docTemplate = `{
                 "motions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.Motion"
+                        "$ref": "#/definitions/motion.Motion"
                     }
                 },
                 "name": {
@@ -461,15 +461,7 @@ const docTemplate = `{
                 }
             }
         },
-        "main.SessionAdd": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.SimpleSession": {
+        "session.SimpleSession": {
             "type": "object",
             "required": [
                 "name"
@@ -489,7 +481,7 @@ const docTemplate = `{
                 }
             }
         },
-        "main.User": {
+        "user.User": {
             "type": "object",
             "required": [
                 "name"
@@ -505,6 +497,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "utils.MessageModel": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }

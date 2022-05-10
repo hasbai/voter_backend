@@ -56,7 +56,6 @@ func (manager *ClientManager) Start() {
 				delete(Manager.Clients, client.ID)
 			}
 		case message := <-Manager.Broadcast:
-			log.Println("ws broadcast", string(message))
 			for _, client := range Manager.Clients {
 				client.Send <- message
 			}

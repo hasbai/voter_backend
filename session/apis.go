@@ -1,28 +1,30 @@
-package main
+package session
 
 import (
 	"github.com/gin-gonic/gin"
+	"voter_backend/db"
+	"voter_backend/utils"
 )
 
-type SessionAdd struct {
+type AddSessionModel struct {
 	Name string `json:"name,omitempty"`
 }
 
-// addSession
+// AddSession
 // @Summary Add A Session
 // @Tags Session
 // @Accept application/json
 // @Produce application/json
 // @Router /sessions [put]
-// @Param json body SessionAdd true "json"
+// @Param json body AddSessionModel true "json"
 // @Success 201 {object} Session
 // @Success 200 {object} Session
-func addSession(c *gin.Context) {
+func AddSession(c *gin.Context) {
 	var session Session
-	if err := validateJSON(c, &session); err != nil {
+	if err := utils.ValidateJSON(c, &session); err != nil {
 		return
 	}
-	result := db.Where(&session).Preload("Motions").FirstOrCreate(&session)
+	result := db.DB.Where(&session).Preload("Motions").FirstOrCreate(&session)
 	var code int
 	if result.RowsAffected > 0 {
 		code = 201
@@ -32,48 +34,48 @@ func addSession(c *gin.Context) {
 	c.JSON(code, session)
 }
 
-// listSessions
+// ListSessions
 // @Summary List Sessions
 // @Tags Session
 // @Produce application/json
 // @Router /sessions [get]
 // @Success 200 {array} SimpleSession
-func listSessions(c *gin.Context) {
+func ListSessions(c *gin.Context) {
 	var sessions []Session
-	db.Find(&sessions)
+	db.DB.Find(&sessions)
 	c.JSON(200, sessions)
 }
 
-// getSession
+// GetSession
 // @Summary Get Session
 // @Tags Session
 // @Produce application/json
 // @Router /sessions/{id} [get]
 // @Param id path int true "id"
 // @Success 200 {object} Session
-// @Failure 404 {object} MessageModel
-func getSession(c *gin.Context) {
-	var id IDUri
-	if err := validateUri(c, &id); err != nil {
+// @Failure 404 {object} utils.MessageModel
+func GetSession(c *gin.Context) {
+	var id utils.IDUri
+	if err := utils.ValidateUri(c, &id); err != nil {
 		return
 	}
 	var session Session
-	if err := detect404(c, db.Preload("Motions").First(&session, id.A)); err != nil {
+	if err := utils.Detect404(c, db.DB.Preload("Motions").First(&session, id.A)); err != nil {
 		return
 	}
 	c.JSON(200, session)
 }
 
-// getLastSession
+// GetTheLatestSession
 // @Summary Get The Last Session
 // @Tags Session
 // @Produce application/json
 // @Router /session [get]
 // @Success 200 {object} Session
-// @Failure 404 {object} MessageModel
-func getLastSession(c *gin.Context) {
+// @Failure 404 {object} utils.MessageModel
+func GetTheLatestSession(c *gin.Context) {
 	var session Session
-	if err := detect404(c, db.Preload("Motions").Last(&session)); err != nil {
+	if err := utils.Detect404(c, db.DB.Preload("Motions").Last(&session)); err != nil {
 		return
 	}
 	c.JSON(200, session)

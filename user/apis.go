@@ -1,7 +1,8 @@
-package main
+package user
 
 import (
 	"github.com/gin-gonic/gin"
+	"voter_backend/db"
 )
 
 type UpdateUser struct {
@@ -20,7 +21,7 @@ type UpdateUser struct {
 func addUser(c *gin.Context) {
 	name := c.Param("name")
 	var user User
-	db.FirstOrCreate(&user, User{Name: name})
+	db.DB.FirstOrCreate(&user, User{Name: name})
 	c.JSON(200, user)
 }
 
@@ -34,6 +35,6 @@ func addUser(c *gin.Context) {
 // @Router /users [get]
 func listUsers(c *gin.Context) {
 	var users []User
-	db.Find(&users)
+	db.DB.Find(&users)
 	c.JSON(200, users)
 }

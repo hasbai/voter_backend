@@ -5,12 +5,15 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	_ "voter_backend/docs"
+	"voter_backend/motion"
+	"voter_backend/session"
+	"voter_backend/user"
 	"voter_backend/ws"
 )
 
 // index
 // @Produce application/json
-// @Success 200 {object} MessageModel
+// @Success 200 {object} utils.MessageModel
 // @Router / [get]
 func index(c *gin.Context) {
 	c.JSON(200, gin.H{
@@ -35,35 +38,26 @@ func index(c *gin.Context) {
 // @in header
 // @name Authorization
 func main() {
-	initDB()
+	migrateDB()
 	go ws.Manager.Start()
-	router := gin.Default()
-	registerRouter(router)
-	if err := router.Run("localhost:8000"); err != nil {
+
+	app := gin.Default()
+	registerRouter(app)
+	user.RegisterRouter(app)
+	motion.RegisterRouter(app)
+	session.RegisterRouter(app)
+	ws.RegisterRouter(app)
+
+	if err := app.Run("localhost:8000"); err != nil {
 		panic(err)
 	}
 }
 
 func registerRouter(router *gin.Engine) {
+	router.GET("/", index)
+
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/docs", func(c *gin.Context) {
 		c.Redirect(301, "/docs/index.html")
 	})
-
-	router.GET("/ws", ws.WebsocketHandler)
-
-	router.GET("/", index)
-	router.GET("/users", listUsers)
-	router.PUT("/users/:name", addUser)
-
-	router.GET("/session", getLastSession)
-	router.GET("/sessions", listSessions)
-	router.GET("/sessions/:id", getSession)
-	router.PUT("/sessions", addSession)
-
-	router.GET("/motion", getLastMotion)
-	router.GET("/motions/:id", getMotion)
-	router.POST("/motions", addMotion)
-	router.POST("/motions/:id/:name", voteMotion)
-	router.PUT("/motions/:id", resolveMotion)
 }

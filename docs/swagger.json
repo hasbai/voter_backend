@@ -24,7 +24,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.MessageModel"
+                            "$ref": "#/definitions/utils.MessageModel"
                         }
                     }
                 }
@@ -43,7 +43,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -74,7 +74,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.MotionAdd"
+                            "$ref": "#/definitions/motion.AddMotionModel"
                         }
                     }
                 ],
@@ -82,7 +82,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -110,7 +110,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -136,7 +136,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -176,7 +176,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Motion"
+                            "$ref": "#/definitions/motion.Motion"
                         }
                     }
                 }
@@ -195,13 +195,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/session.Session"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/main.MessageModel"
+                            "$ref": "#/definitions/utils.MessageModel"
                         }
                     }
                 }
@@ -222,7 +222,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.SimpleSession"
+                                "$ref": "#/definitions/session.SimpleSession"
                             }
                         }
                     }
@@ -246,7 +246,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.SessionAdd"
+                            "$ref": "#/definitions/session.AddSessionModel"
                         }
                     }
                 ],
@@ -254,13 +254,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/session.Session"
                         }
                     },
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/session.Session"
                         }
                     }
                 }
@@ -288,13 +288,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Session"
+                            "$ref": "#/definitions/session.Session"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/main.MessageModel"
+                            "$ref": "#/definitions/utils.MessageModel"
                         }
                     }
                 }
@@ -318,7 +318,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.User"
+                                "$ref": "#/definitions/user.User"
                             }
                         }
                     }
@@ -350,7 +350,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.User"
+                            "$ref": "#/definitions/user.User"
                         }
                     }
                 }
@@ -358,15 +358,18 @@
         }
     },
     "definitions": {
-        "main.MessageModel": {
+        "motion.AddMotionModel": {
             "type": "object",
             "properties": {
-                "message": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
         },
-        "main.Motion": {
+        "motion.Motion": {
             "type": "object",
             "required": [
                 "name"
@@ -416,18 +419,15 @@
                 }
             }
         },
-        "main.MotionAdd": {
+        "session.AddSessionModel": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string"
                 }
             }
         },
-        "main.Session": {
+        "session.Session": {
             "type": "object",
             "required": [
                 "name"
@@ -442,7 +442,7 @@
                 "motions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.Motion"
+                        "$ref": "#/definitions/motion.Motion"
                     }
                 },
                 "name": {
@@ -453,15 +453,7 @@
                 }
             }
         },
-        "main.SessionAdd": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.SimpleSession": {
+        "session.SimpleSession": {
             "type": "object",
             "required": [
                 "name"
@@ -481,7 +473,7 @@
                 }
             }
         },
-        "main.User": {
+        "user.User": {
             "type": "object",
             "required": [
                 "name"
@@ -497,6 +489,14 @@
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "utils.MessageModel": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }

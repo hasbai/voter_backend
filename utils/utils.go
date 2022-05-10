@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func validateJSON(c *gin.Context, obj interface{}) error {
+func ValidateJSON(c *gin.Context, obj interface{}) error {
 	if err := c.ShouldBindJSON(obj); err != nil {
 		c.AbortWithStatusJSON(400, gin.H{"message": err.Error()})
 		return err
@@ -14,7 +14,7 @@ func validateJSON(c *gin.Context, obj interface{}) error {
 	return nil
 }
 
-func validateUri(c *gin.Context, obj interface{}) error {
+func ValidateUri(c *gin.Context, obj interface{}) error {
 	if err := c.ShouldBindUri(obj); err != nil {
 		c.AbortWithStatusJSON(400, gin.H{"message": err.Error()})
 		return err
@@ -22,7 +22,7 @@ func validateUri(c *gin.Context, obj interface{}) error {
 	return nil
 }
 
-func detect404(c *gin.Context, result *gorm.DB) error {
+func Detect404(c *gin.Context, result *gorm.DB) error {
 	if result.Error == nil {
 		return nil
 	}
@@ -33,9 +33,3 @@ func detect404(c *gin.Context, result *gorm.DB) error {
 	panic(result.Error)
 }
 
-func getUser(c *gin.Context) (User, error) {
-	username := c.GetHeader("Authorization")
-	user := User{}
-	err := detect404(c, db.Where("name = ?", username).First(&user))
-	return user, err
-}

@@ -1,11 +1,13 @@
 basePath: /
 definitions:
-  main.MessageModel:
+  motion.AddMotionModel:
     properties:
-      message:
+      description:
+        type: string
+      name:
         type: string
     type: object
-  main.Motion:
+  motion.Motion:
     properties:
       abstain:
         items:
@@ -38,14 +40,12 @@ definitions:
     required:
     - name
     type: object
-  main.MotionAdd:
+  session.AddSessionModel:
     properties:
-      description:
-        type: string
       name:
         type: string
     type: object
-  main.Session:
+  session.Session:
     properties:
       createdAt:
         type: string
@@ -53,7 +53,7 @@ definitions:
         type: integer
       motions:
         items:
-          $ref: '#/definitions/main.Motion'
+          $ref: '#/definitions/motion.Motion'
         type: array
       name:
         type: string
@@ -62,12 +62,7 @@ definitions:
     required:
     - name
     type: object
-  main.SessionAdd:
-    properties:
-      name:
-        type: string
-    type: object
-  main.SimpleSession:
+  session.SimpleSession:
     properties:
       createdAt:
         type: string
@@ -80,7 +75,7 @@ definitions:
     required:
     - name
     type: object
-  main.User:
+  user.User:
     properties:
       createdAt:
         type: string
@@ -92,6 +87,11 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  utils.MessageModel:
+    properties:
+      message:
+        type: string
     type: object
 info:
   contact:
@@ -112,7 +112,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.MessageModel'
+            $ref: '#/definitions/utils.MessageModel'
   /motion:
     get:
       produces:
@@ -121,7 +121,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Motion'
+            $ref: '#/definitions/motion.Motion'
       summary: Get The Last Motion
       tags:
       - Motion
@@ -136,14 +136,14 @@ paths:
         name: json
         required: true
         schema:
-          $ref: '#/definitions/main.MotionAdd'
+          $ref: '#/definitions/motion.AddMotionModel'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Motion'
+            $ref: '#/definitions/motion.Motion'
       security:
       - ApiKeyAuth: []
       summary: Add A Motion
@@ -163,7 +163,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Motion'
+            $ref: '#/definitions/motion.Motion'
       summary: Get A Motion
       tags:
       - Motion
@@ -180,7 +180,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Motion'
+            $ref: '#/definitions/motion.Motion'
       summary: Resolve A Motion
       tags:
       - Motion
@@ -203,7 +203,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Motion'
+            $ref: '#/definitions/motion.Motion'
       security:
       - ApiKeyAuth: []
       summary: Vote A Motion
@@ -217,11 +217,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Session'
+            $ref: '#/definitions/session.Session'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/main.MessageModel'
+            $ref: '#/definitions/utils.MessageModel'
       summary: Get The Last Session
       tags:
       - Session
@@ -234,7 +234,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/main.SimpleSession'
+              $ref: '#/definitions/session.SimpleSession'
             type: array
       summary: List Sessions
       tags:
@@ -248,18 +248,18 @@ paths:
         name: json
         required: true
         schema:
-          $ref: '#/definitions/main.SessionAdd'
+          $ref: '#/definitions/session.AddSessionModel'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Session'
+            $ref: '#/definitions/session.Session'
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Session'
+            $ref: '#/definitions/session.Session'
       summary: Add A Session
       tags:
       - Session
@@ -277,11 +277,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Session'
+            $ref: '#/definitions/session.Session'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/main.MessageModel'
+            $ref: '#/definitions/utils.MessageModel'
       summary: Get Session
       tags:
       - Session
@@ -296,7 +296,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/main.User'
+              $ref: '#/definitions/user.User'
             type: array
       summary: List Users
       tags:
@@ -317,7 +317,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.User'
+            $ref: '#/definitions/user.User'
       summary: Add A User
       tags:
       - User
