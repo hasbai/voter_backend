@@ -8,11 +8,6 @@ type SessionAdd struct {
 	Name string `json:"name,omitempty"`
 }
 
-type SessionResponse struct {
-	SimpleSession
-	Motions []Motion
-}
-
 // addSession
 // @Summary Add A Session
 // @Tags Session
@@ -20,14 +15,14 @@ type SessionResponse struct {
 // @Produce application/json
 // @Router /sessions [put]
 // @Param json body SessionAdd true "json"
-// @Success 201 {object} SessionResponse
-// @Success 200 {object} SessionResponse
+// @Success 201 {object} Session
+// @Success 200 {object} Session
 func addSession(c *gin.Context) {
 	var session Session
 	if err := validateJSON(c, &session); err != nil {
 		return
 	}
-	result := db.Where(&session).FirstOrCreate(&session)
+	result := db.Where(&session).Preload("Motions").FirstOrCreate(&session)
 	var code int
 	if result.RowsAffected > 0 {
 		code = 201
@@ -55,7 +50,7 @@ func listSessions(c *gin.Context) {
 // @Produce application/json
 // @Router /sessions/{id} [get]
 // @Param id path int true "id"
-// @Success 200 {object} SessionResponse
+// @Success 200 {object} Session
 // @Failure 404 {object} MessageModel
 func getSession(c *gin.Context) {
 	var id IDUri
@@ -74,7 +69,7 @@ func getSession(c *gin.Context) {
 // @Tags Session
 // @Produce application/json
 // @Router /session [get]
-// @Success 200 {object} SessionResponse
+// @Success 200 {object} Session
 // @Failure 404 {object} MessageModel
 func getLastSession(c *gin.Context) {
 	var session Session

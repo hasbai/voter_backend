@@ -187,7 +187,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.SessionResponse"
+                            "$ref": "#/definitions/main.Session"
                         }
                     },
                     "404": {
@@ -246,13 +246,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.SessionResponse"
+                            "$ref": "#/definitions/main.Session"
                         }
                     },
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.SessionResponse"
+                            "$ref": "#/definitions/main.Session"
                         }
                     }
                 }
@@ -280,7 +280,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.SessionResponse"
+                            "$ref": "#/definitions/main.Session"
                         }
                     },
                     "404": {
@@ -419,15 +419,7 @@ const docTemplate = `{
                 }
             }
         },
-        "main.SessionAdd": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.SessionResponse": {
+        "main.Session": {
             "type": "object",
             "required": [
                 "name"
@@ -449,6 +441,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.SessionAdd": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }

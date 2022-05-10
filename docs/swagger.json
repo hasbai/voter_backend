@@ -179,7 +179,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.SessionResponse"
+                            "$ref": "#/definitions/main.Session"
                         }
                     },
                     "404": {
@@ -238,13 +238,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.SessionResponse"
+                            "$ref": "#/definitions/main.Session"
                         }
                     },
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.SessionResponse"
+                            "$ref": "#/definitions/main.Session"
                         }
                     }
                 }
@@ -272,7 +272,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.SessionResponse"
+                            "$ref": "#/definitions/main.Session"
                         }
                     },
                     "404": {
@@ -411,15 +411,7 @@
                 }
             }
         },
-        "main.SessionAdd": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.SessionResponse": {
+        "main.Session": {
             "type": "object",
             "required": [
                 "name"
@@ -441,6 +433,14 @@
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.SessionAdd": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }

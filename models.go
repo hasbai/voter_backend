@@ -25,6 +25,16 @@ type Session struct {
 	Motions []Motion `json:"motions"`
 }
 
+func (session *Session) AfterFind(tx *gorm.DB) (err error) {
+	if session.Motions == nil {
+		session.Motions = []Motion{}
+	}
+	return
+}
+func (session *Session) AfterCreate(tx *gorm.DB) (err error) {
+	return session.AfterFind(tx)
+}
+
 type Motion struct {
 	BaseModel
 	Name        string   `binding:"required" json:"name"`
@@ -50,16 +60,7 @@ func (motion *Motion) AfterFind(tx *gorm.DB) (err error) {
 	return
 }
 func (motion *Motion) AfterCreate(tx *gorm.DB) (err error) {
-	if motion.For == nil {
-		motion.For = []int{}
-	}
-	if motion.Against == nil {
-		motion.Against = []int{}
-	}
-	if motion.Abstain == nil {
-		motion.Abstain = []int{}
-	}
-	return
+	return motion.AfterFind(tx)
 }
 
 type User struct {
