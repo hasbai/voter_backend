@@ -5,6 +5,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	_ "voter_backend/docs"
+	"voter_backend/ws"
 )
 
 // index
@@ -35,18 +36,21 @@ func index(c *gin.Context) {
 // @name Authorization
 func main() {
 	initDB()
+	go ws.Manager.Start()
 	router := gin.Default()
-	router = registerRouter(router)
+	registerRouter(router)
 	if err := router.Run("localhost:8000"); err != nil {
 		panic(err)
 	}
 }
 
-func registerRouter(router *gin.Engine) *gin.Engine {
+func registerRouter(router *gin.Engine) {
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/docs", func(c *gin.Context) {
 		c.Redirect(301, "/docs/index.html")
 	})
+
+	router.GET("/ws", ws.WebsocketHandler)
 
 	router.GET("/", index)
 	router.GET("/users", listUsers)
@@ -62,6 +66,4 @@ func registerRouter(router *gin.Engine) *gin.Engine {
 	router.POST("/motions", addMotion)
 	router.POST("/motions/:name", voteMotion)
 	router.PUT("/motions", resolveMotion)
-
-	return router
 }
