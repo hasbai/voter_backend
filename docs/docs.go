@@ -331,10 +331,8 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/users/{name}": {
-            "put": {
+            },
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -347,16 +345,24 @@ const docTemplate = `{
                 "summary": "Add A User",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "username",
-                        "name": "name",
-                        "in": "path",
-                        "required": true
+                        "description": "json",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.AddUser"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    },
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/user.User"
                         }
@@ -481,6 +487,20 @@ const docTemplate = `{
                 }
             }
         },
+        "user.AddUser": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "user.User": {
             "type": "object",
             "required": [
@@ -488,6 +508,9 @@ const docTemplate = `{
             ],
             "properties": {
                 "createdAt": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "id": {

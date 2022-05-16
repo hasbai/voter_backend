@@ -3,11 +3,8 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"voter_backend/db"
+	"voter_backend/utils"
 )
-
-type UpdateUser struct {
-	Vote int8 `json:"vote"`
-}
 
 // addUser
 // @Summary Add A User
@@ -15,14 +12,28 @@ type UpdateUser struct {
 // @Tags User
 // @Accept application/json
 // @Produce application/json
-// @Param name path string true "username"
+// @Param json body AddUser true "json"
 // @Success 200 {object} User
-// @Router /users/{name} [put]
+// @Success 201 {object} User
+// @Router /users [post]
 func addUser(c *gin.Context) {
-	name := c.Param("name")
 	var user User
-	db.DB.FirstOrCreate(&user, User{Name: name})
-	c.JSON(200, user)
+	var body AddUser
+	if err := utils.ValidateJSON(c, &body); err != nil {
+		return
+	}
+	result := db.DB.FirstOrCreate(&user, User{Name: body.Name})
+	if body.Email != "" {
+		user.Email = body.Email
+		db.DB.Save(&user)
+	}
+	var code int
+	if result.RowsAffected > 0 {
+		code = 201
+	} else {
+		code = 200
+	}
+	c.JSON(code, user)
 }
 
 // listUsers

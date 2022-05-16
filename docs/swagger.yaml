@@ -75,9 +75,20 @@ definitions:
     required:
     - name
     type: object
+  user.AddUser:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
   user.User:
     properties:
       createdAt:
+        type: string
+      email:
         type: string
       id:
         type: integer
@@ -301,21 +312,25 @@ paths:
       summary: List Users
       tags:
       - User
-  /users/{name}:
-    put:
+    post:
       consumes:
       - application/json
       parameters:
-      - description: username
-        in: path
-        name: name
+      - description: json
+        in: body
+        name: json
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/user.AddUser'
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/user.User'
       summary: Add A User
